@@ -44,5 +44,13 @@ By default, we use `deepspeed` to launch the training script. To train a model, 
 ```bash
 dvagen train [deepspeed_args] --config_path examples/train.yaml
 ```
+An example for training command.
+```bash
+dvagen train --num_gpus 1 \
+             --num_nodes 1 \
+             --master_addr "localhost" \
+             --master_port 9901 \
+             --config_path examples/train.yaml
+```
 
 Details of the configuration files are available in the [examples/README.md](examples/README.md) file.
