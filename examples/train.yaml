@@ -1,0 +1,46 @@
+model:
+  language_model_path: "Qwen/Qwen3-0.6B-Base"
+  phrase_encoder_path: "Qwen/Qwen3-0.6B-Base"
+  phrase_sampler_type: "N_TOKENS"
+  sampler_model_path: "/path/to/phrase_sampler_tokenizer"
+  sampler_random_up: 12
+  sampler_random_low: 8
+  phrase_max_length: 5
+  use_phrase_encoder_proj: true
+  phrase_encoder_proj_pdrop: 0.1
+  phrase_encoder_proj_act: "relu"
+  phrase_encoder_batch_size: 64
+
+data:
+  data_source: "fineweb"
+  train_path: "/path/to/train_data.txt"
+  save_train_path: "/path/to/save_train_data.txt"
+  validation_path: "/path/to/validation_data.txt"
+
+train:
+  finetuning_type: "FULL"
+  output_dir: "DVAModel-Qwen3-0.6B-Qwen3-0.6B"
+  learning_rate: 1e-4
+  warmup_ratio: 0.05
+  lr_scheduler_type: "cosine"
+  weight_decay: 0.0
+  adam_beta1: 0.9
+  adam_beta2: 0.95
+  adam_epsilon: 1e-8
+  max_grad_norm: 1.0
+  per_device_train_batch_size: 4
+  gradient_accumulation_steps: 2
+  logging_steps: 1
+  max_steps: 20000
+  save_steps: 5000
+  save_total_limit: 5
+  bf16: true
+  tf32: true
+  dataloader_num_workers: 16
+  dataloader_prefetch_factor: 2
+  gradient_checkpointing: true
+  gradient_checkpointing_kwargs:
+    use_reentrant: false
+  ddp_find_unused_parameters: true
+  deepspeed: "/path/to/deepspeed_config.json"
+  report_to: "none"
