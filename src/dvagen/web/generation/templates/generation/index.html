@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>DVA</title>
+		<link rel="stylesheet" href="{% static 'css/bulma/bulma.min.css' %}" />
+		<link
+			rel="stylesheet"
+			href="{% static 'css/bulma/bulma-carousel.min.css' %}"
+		/>
+		<link
+			rel="stylesheet"
+			href="{% static 'css/bulma/bulma-slider.min.css' %}"
+		/>
+		<link
+			rel="stylesheet"
+			href="{% static 'css/fontawesome/fontawesome.all.min.css' %}"
+		/>
+		<link
+			rel="stylesheet"
+			href="{% static 'css/generation/alternativeBox.css' %}"
+		/>
+		<link rel="stylesheet" href="{% static 'css/generation/outputBox.css' %}" />
+		<link rel="stylesheet" href="{% static 'css/generation/inputBox.css' %}" />
+		<link rel="stylesheet" href="{% static 'css/generation/style.css' %}" />
+		<script src="{% static 'js/generation/scripts.js' %}"></script>
+	</head>
+
+	<body>
+		<section class="section" id="header">
+			<div class="container is-max-desktop">
+				<div class="is-centered has-text-centered">
+					<div class="dva title is-2">DVAGen</div>
+{#					<div class="content has-text-justified">#}
+{#						TODO: Introduction and userguide of DVA, please replace this text#}
+{#						with the actual content. Mult-lines testing...Mult-lines#}
+{#						testing...Mult-lines testing...#}
+{#					</div>#}
+                    <div class="content has-text-justified">
+						DVAGen-Llama3.2-1B (Qwen3-0.6B as the phrase encoder) <br/>
+                        Decoding Method: Nucleus Sampling (temperature=0.7 and top_k=100) <br/>
+					</div>
+				</div>
+			</div>
+		</section>
+		<section class="section" id="generation-container">
+			<div class="container is-max-desktop">
+				<div class="box is-centered has-text-centered" id="generation-box">
+					{% csrf_token %}
+					<div class="box is-hovered input-area">
+						<textarea
+							id="input-box"
+							class="input is-normal box is-hovered input-box"
+							type="text"
+							placeholder="Input your question here."
+							aria-live="polite"
+						></textarea>
+						<div id="button-area" class="button-area">
+							<button id="generate-button" class="button is-link">
+								Generate
+							</button>
+							<button id="example-button" class="button is-link is-light">
+								Take an Example
+							</button>
+						</div>
+					</div>
+					<textarea
+						id="phrase-table"
+						class="textarea is-normal box is-hovered"
+						placeholder="Input your phrases here. Separate phrases by whitespace (space, tab, newline)."
+						aria-live="polite"
+					></textarea>
+					<div
+						id="output-box"
+						class="textarea box output-box"
+						aria-live="polite"
+					></div>
+					<div class="alternative-title block" id="alternatives-title">
+						Ask DVAModel to generate response first...
+					</div>
+					<div class="block" id="alternatives-buttons">
+						<button id="phrase-button" class="button is-link is-light">
+							Phrases
+						</button>
+						<button id="all-button" class="button is-link is-light">
+							Tokens & Phrases
+						</button>
+						<button id="token-button" class="button is-link is-light">
+							Tokens
+						</button>
+					</div>
+					<div class="box outline-box" id="outline-panel">
+						<div class="box scrolled-box" id="alternatives-panel"></div>
+						<div class="box scrolled-box" id="alternatives-token-panel"></div>
+						<div class="box scrolled-box" id="alternatives-phrase-panel"></div>
+					</div>
+				</div>
+			</div>
+		</section>
+{#		<section class="section" id="BibTeX">#}
+{#			<div class="container is-max-desktop content">#}
+{#				<h2 class="title">BibTeX</h2>#}
+{#				<pre></pre#}
+{#				>#}
+{#			</div>#}
+{#		</section>#}
+	</body>
+</html>

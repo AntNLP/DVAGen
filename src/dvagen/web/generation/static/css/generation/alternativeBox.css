@@ -1,0 +1,110 @@
+/* Style for Alternative Box */
+
+.alternatives-panel,
+.alternatives-token-panel,
+.alternatives-phrase-panel {
+	position: absolute;
+	top: 20%;
+	right: -30%;
+
+	min-height: 150px;
+	border: 1px solid #d9d9d9;
+	border-radius: 6px;
+	padding: 15px;
+	background-color: #fafafa;
+}
+
+/* Alternative Buttons */
+#alternatives-buttons {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 0;
+	width: 100%;
+}
+
+#phrase-button,
+#all-button,
+#token-button {
+	font-weight: 600;
+	flex-grow: 1;
+	border-radius: 0%;
+	border-top: 2px solid #bae7ff;
+	border-left: 2px solid #bae7ff;
+	border-right: 2px solid #bae7ff;
+}
+#phrase-button,
+#all-button,
+#token-button:focus:not(:active) {
+	box-shadow: none;
+}
+#phrase-button {
+	border-top-left-radius: 1rem;
+	border-right: none;
+}
+#token-button {
+	border-top-right-radius: 1rem;
+	border-left: none;
+}
+
+/* Alternative Box */
+.outline-box {
+	padding: 0.1rem 0.5rem;
+	border: 2px solid #bae7ff;
+	border-top: 2px solid #bae7ff;
+	border-top-left-radius: 0%;
+	border-top-right-radius: 0%;
+}
+
+#alternatives-panel,
+#alternatives-token-panel,
+#alternatives-phrase-panel {
+	overflow-y: auto;
+	max-height: 400px;
+	padding: 0.5% 1%;
+	box-shadow: none;
+	margin-bottom: 0.5rem;
+}
+
+.scrolled-box .option-box {
+	padding: 0.4em;
+	margin-bottom: 0.5em;
+}
+
+.scrolled-box .option-selected {
+	border: 2px solid #004fcb;
+}
+
+.scrolled-box .option-box:hover {
+	background-color: #d3ffef29;
+	cursor: pointer;
+}
+
+/* Alternative Title */
+.alternative-title {
+	font-weight: bold;
+	color: crimson;
+}
+
+/* Alternative Option */
+.option-textarea {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.option-token {
+	text-align: left;
+	font-size: 0.9em;
+	font-weight: bold;
+}
+
+.option-percent {
+	text-align: right;
+	font-size: 0.9em;
+	color: #278fc7;
+	margin-left: 1rem;
+}
+
+.option-progress {
+	height: 0.5rem;
+}

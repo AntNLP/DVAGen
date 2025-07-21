@@ -1,18 +1,20 @@
 model:
-  model_name_or_path: "/path/to/dva_model"
-  language_model_path: "/path/to/dva_model/lm_tokenizer"
-  phrase_encoder_path: "/path/to/dva_model/phrase_tokenizer"
+  model_name_or_path: "/home/weidu/data/dvagen/ckpt/llama-3.2-1b_qwen3-0.6b_fineweb-1b/checkpoint-85354"
+  language_model_path: "/home/weidu/data/dvagen/ckpt/llama-3.2-1b_qwen3-0.6b_fineweb-1b/checkpoint-85354/lm_tokenizer"
+  phrase_encoder_path: "/home/weidu/data/dvagen/ckpt/llama-3.2-1b_qwen3-0.6b_fineweb-1b/checkpoint-85354/phrase_tokenizer"
   phrase_sampler_type: "N_TOKENS"
-  sampler_model_path: "/path/to/phrase_sampler_tokenizer"
+  sampler_model_path: "/home/nwliu/data/dvagen/ckpt/qwen3-0.6b/checkpoint-20000/phrase_tokenizer"
   sampler_random_up: 12
   sampler_random_low: 8
   phrase_max_length: 5
   phrase_encoder_batch_size: 100000
 
 infer:
+  mode: "WebUI"
+  port: 8088
   doc_top_k: 32
-  embedding_model_path: "/path/to/embedding_model"
-  vector_store_path: "/path/to/vector_store_index"
+  embedding_model_path: "/home/nwliu/public/pretrain/Qwen/Qwen3-Embedding-0.6B"
+  vector_store_path: "/home/nwliu/data/dvagen/index"
   do_sample: true
   max_new_tokens: 512
   temperature: 0.7

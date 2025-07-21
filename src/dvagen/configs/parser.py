@@ -1,4 +1,5 @@
 import json
+import sys
 from dataclasses import dataclass
 from typing import Any
 
@@ -30,7 +31,9 @@ class Args(simple_parsing.Serializable):
         )
 
     def to_json(self):
-        default = lambda o: repr(o)  # default to repr if object is not serializable
+        default = lambda o: repr(
+            o
+        )  # default to repr if object is not serializable
         return json.dumps(self.to_dict(), indent=2, default=default)
 
 
@@ -72,4 +75,29 @@ def get_eval_args():
     args = EvalArgs.parse()
     logging.set_global_logger()
     logger.info_rank0(args.to_json())
+    return args
+
+
+def parse_args(argv=None) -> dict[str, str | bool]:
+    if argv is None:
+        argv = sys.argv[1:]
+    args = {}
+    i = 0
+    while i < len(argv):
+        arg = argv[i]
+        if arg.startswith("--"):
+            key = arg.lstrip("-")
+            if "=" in key:
+                # --key=value
+                k, v = key.split("=", 1)
+                args[k] = v
+            else:
+                # --key value
+                if i + 1 < len(argv) and not argv[i + 1].startswith("--"):
+                    args[key] = argv[i + 1]
+                    i += 1
+                else:
+                    # --flag
+                    args[key] = True
+        i += 1
     return args

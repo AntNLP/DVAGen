@@ -22,7 +22,6 @@ dependencies = [
     "numpy == 1.26.4",
     "spacy",
     "torch == 2.7.0",
-    "faiss == 1.9.0",
     "peft == 0.14.0",
     "datasets == 3.6.0",
     "Django == 5.2.1",
@@ -33,7 +32,11 @@ dependencies = [
     "langchain_community == 0.3.25",
     "langchain_core == 0.3.65",
     "langchain_huggingface == 0.3.0",
-    "langchain-text-splitters == 0.3.8"
+    "langchain-text-splitters == 0.3.8",
+    "simple_parsing",
+    "Pillow",
+    "mauve-text",
+    "sentence-transformers"
 ]
 
 [project.scripts]

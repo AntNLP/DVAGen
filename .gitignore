@@ -178,6 +178,3 @@ cython_debug/
 .DS_Store
 
 our_examples/
-
-# Coming Soon ...
-webui/

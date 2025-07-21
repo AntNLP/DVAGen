@@ -3,6 +3,8 @@ from dataclasses import dataclass
 
 @dataclass
 class InferArguments:
+    mode: str
+    port: int
     doc_top_k: int
     embedding_model_path: str
     data_file: str | None = None

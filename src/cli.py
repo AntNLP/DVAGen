@@ -5,7 +5,12 @@ import sys
 from functools import partial
 
 import dvagen
-from dvagen.configs import get_eval_args, get_infer_args, get_train_args
+from dvagen.configs import (
+    get_eval_args,
+    get_infer_args,
+    get_train_args,
+    parse_args,
+)
 from dvagen.infer.chat import chat
 from dvagen.infer.eval import evaluate
 from dvagen.train.train import train
@@ -71,8 +76,12 @@ def main():
             hostfile = args.pop("hostfile", r"")
             master_addr = args.pop("master_addr", "localhost")
             master_port = args.pop("master_port", 9901)
-            train_script = os.path.join(os.path.dirname(os.path.abspath(__file__)), "launch_train.py")
-            train_args = " ".join(f"--{k}={v}" for k, v in args.items() if v is not True)
+            train_script = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)), "launch_train.py"
+            )
+            train_args = " ".join(
+                f"--{k}={v}" for k, v in args.items() if v is not True
+            )
             cmd = [
                 "deepspeed",
                 f"--num_gpus={num_gpus}",

@@ -1,0 +1,24 @@
+/* DVA Title */
+.dva {
+	font-variant: small-caps;
+	font-weight: bold;
+}
+
+/* Phrase */
+.phrase {
+	color: #bd1a81;
+	font-weight: 600;
+	position: relative;
+}
+
+/* Phrase in OptionToken */
+.phrase.option-token {
+	margin-bottom: 0.3rem;
+}
+.phrase.option-token:hover::after {
+	top: 50%;
+	left: 100%;
+	transform: translateY(-50%);
+	z-index: 10;
+	pointer-events: none;
+}

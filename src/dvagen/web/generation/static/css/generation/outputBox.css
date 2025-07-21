@@ -1,0 +1,55 @@
+/* Style for Output Box */
+
+.output-box {
+	flex: 3;
+	/* 主内容区域占更多空间 */
+	border: 2px solid #d9d9d96e;
+	padding: 10px 15px;
+	border-radius: 6px;
+	background-color: #ffffff;
+	font-size: 1.1em;
+	font-weight: 500;
+	line-height: 1.8;
+	opacity: 0.6;
+	display: flex;
+	/* 用于token的排列 */
+	flex-wrap: wrap;
+	max-height: none;
+	height: auto;
+	/* 允许token换行 */
+	align-content: flex-start;
+	/* 使换行内容从顶部开始 */
+	gap: 0px;
+	/* 移除span之间的默认间隙，通过padding控制 */
+	/* overflow-y: auto; */
+	align-self: flex-start;
+}
+
+#output-box {
+	max-height: none;
+	/* Overwrite the max-height to display flex-wrap correctly */
+}
+
+/* Token Span */
+.token-span {
+	padding: 0.2rem 0.1rem;
+	/* 微调padding，主要为了hover效果的边界 */
+	cursor: pointer;
+	transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+	border-radius: 3px;
+	white-space: pre;
+	/* 保留token内部的空格，如 " world" 中的前导空格 */
+	color: black;
+	font-weight: 500;
+}
+
+.token-span:hover {
+	background-color: #e6f7ff;
+	/* 鼠标悬浮高亮颜色 */
+}
+
+.token-span.selected-for-alternatives {
+	background-color: #bae7ff;
+	/* 点击后高亮，显示其候选项 */
+	font-weight: 500;
+}
