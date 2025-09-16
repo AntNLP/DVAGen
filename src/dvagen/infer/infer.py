@@ -111,7 +111,8 @@ def infer(
 
     input_ids = prefix_inputs["input_ids"].to(model.device)
     attention_mask = prefix_inputs["attention_mask"].to(model.device)
-    phrase_ids = phrase_attention_mask = None
+    # During inference, an empty tensor is used to represent the empty phrase candidates.
+    phrase_ids = phrase_attention_mask = torch.tensor([])
     if len(phrase_inputs["phrase_ids"]):
         phrase_ids = phrase_inputs["phrase_ids"].to(model.device)
         phrase_attention_mask = phrase_inputs["phrase_attention_mask"].to(model.device)
@@ -124,7 +125,7 @@ def infer(
         dva_embeds=dva_embeds,
         logits_processor=LogitsProcessorList([DVALogitsProcessor(mask_phrase_ids)]),
         output_scores=visualize,
-        return_dict_in_generate=visualize,
+        return_dict_in_generate=True,
         **kwargs,
     )
     if phrase_ids is not None:

@@ -7,6 +7,7 @@ dynamic vocabulary-augmented language models.
 
 # Updates
 
+- [2025/09/10] 🎉🎉DVAGen was accepted by EMNLP 2025 Demo!
 - [2025/07/18] DVAGen v0.1.0 released!
 
 # Quick Start

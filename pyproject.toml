@@ -22,6 +22,7 @@ dependencies = [
     "numpy == 1.26.4",
     "spacy",
     "torch == 2.7.0",
+    "mauve-text == 0.4.0",
     "faiss == 1.9.0",
     "peft == 0.14.0",
     "datasets == 3.6.0",
@@ -33,11 +34,18 @@ dependencies = [
     "langchain_community == 0.3.25",
     "langchain_core == 0.3.65",
     "langchain_huggingface == 0.3.0",
-    "langchain-text-splitters == 0.3.8"
+    "langchain-text-splitters == 0.3.8",
+    "simple-parsing",
+    "pillow == 11.2.1",
+    "sentence-transformers == 4.1.0",
+    "deepspeed == 0.16.1"
 ]
 
 [project.scripts]
 dvagen = "cli:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "dvagen.__version__" }
 
 [tool.ruff]
 target-version = "py311"

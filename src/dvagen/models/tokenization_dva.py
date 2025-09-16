@@ -74,9 +74,11 @@ class DVATokenizer:
         )
         outputs = {
             "input_ids": input_ids,
-            "phrase_ids": padded_phrase_ids["input_ids"],
+            "phrase_ids": padded_phrase_ids["input_ids"] if len(padded_phrase_ids["input_ids"]) else torch.tensor([]),
             "attention_mask": attention_mask,
-            "phrase_attention_mask": padded_phrase_ids["attention_mask"],
+            "phrase_attention_mask": padded_phrase_ids["attention_mask"]
+            if len(padded_phrase_ids["attention_mask"])
+            else torch.tensor([]),
         }
         if phrases_mask:
             outputs["mask_ids"] = []

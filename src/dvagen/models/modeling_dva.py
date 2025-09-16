@@ -131,21 +131,27 @@ class DVAModel(PreTrainedModel, GenerationMixin):
         return forward_params
 
     def get_dva_embeddings(
-        self, phrase_ids: torch.Tensor | None, phrase_attention_mask: torch.Tensor | None
+        self, phrase_ids: torch.Tensor, phrase_attention_mask: torch.Tensor
     ) -> tuple[torch.Tensor, torch.Tensor]:
         """Compute the input embeddings and output embeddings (LM Head) of the DVAModel.
 
         M: The size of the dynamic vocabulary (DV), i.e., the size of the phrase candidates.
         V: The size of the static vocabulary (SV), i.e., the vocab size of the language model.
-        L: Sequence length
-        :param phrase_ids: Input ids of the phrases tokenized by the phrase tokenizer. (Shape: [M, L])
-        :param phrase_attention_mask: Attention mask for the input ids. (Shape: [M, L])
+        L: Sequence length.
+        :param phrase_ids: Input ids of the phrases tokenized by the phrase tokenizer.
+                           An empty tensor indicates that there are no phrase candidates. (Shape: [M, L])
+        :param phrase_attention_mask: Attention mask for the input ids.
+                                      An empty tensor indicates that there are no phrase candidates. (Shape: [M, L])
         :return: A tuple containing the input and output embeddings of the DVAModel. (Shape: [V+M, D])
         """
-        if phrase_ids is None or phrase_attention_mask is None:
-            # If the dynamic vocabulary is not provided (i.e., without phrase candidates),
-            # the static vocabulary embeddings are returned as dva embeddings.
-            return self.sv_input_embeddings, self.sv_output_embeddings
+        use_dummy_phrase = False
+        if phrase_ids.numel() == 0:
+            # If no dynamic vocabulary is provided (i.e., without phrase candidates),
+            # add a dummy phrase to prevent reduction errors during training.
+            # This dummy phrase is never used and has no effect during training or inference.
+            phrase_ids = torch.zeros((1, 1), dtype=torch.long, device=self.phrase_encoder.device)
+            phrase_attention_mask = torch.ones((1, 1), dtype=torch.long, device=self.phrase_encoder.device)
+            use_dummy_phrase = True
 
         dv_embeddings = [
             self._get_phrase_embeddings(
@@ -154,8 +160,12 @@ class DVAModel(PreTrainedModel, GenerationMixin):
             )
             for i in range(0, len(phrase_ids), self.config.phrase_encoder_batch_size)
         ]
+
         dva_input_embeddings = torch.cat([self.sv_input_embeddings, *dv_embeddings], dim=0)
-        dva_output_embeddings = torch.cat([self.sv_output_embeddings, *dv_embeddings], dim=0)
+        if use_dummy_phrase:
+            dva_output_embeddings = self.sv_output_embeddings
+        else:
+            dva_output_embeddings = torch.cat([self.sv_output_embeddings, *dv_embeddings], dim=0)
 
         return dva_input_embeddings, dva_output_embeddings
 
@@ -201,7 +211,9 @@ class DVAModel(PreTrainedModel, GenerationMixin):
         else:
             assert dva_embeds is not None, (
                 "Either `phrase_ids` and `phrase_attention_mask` or `dva_embeds` must be provided to compute the "
-                "DVA input and output embeddings."
+                "DVA input and output embeddings. "
+                "If you intend to pass empty phrase candidates, set `phrase_ids` and `phrase_attention_mask` "
+                "to empty tensors. (i.e., `phrase_ids = phrase_attention_mask = torch.tensor([])`)"
             )
             dva_input_embeddings, dva_output_embeddings = dva_embeds
 
