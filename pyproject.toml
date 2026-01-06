@@ -32,11 +32,7 @@ dependencies = [
     "langchain_community == 0.3.25",
     "langchain_core == 0.3.65",
     "langchain_huggingface == 0.3.0",
-    "langchain-text-splitters == 0.3.8",
-    "simple_parsing",
-    "Pillow",
-    "mauve-text",
-    "sentence-transformers"
+    "langchain-text-splitters == 0.3.8"
 ]
 
 [project.scripts]

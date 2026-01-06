@@ -5,7 +5,12 @@ from transformers import AutoTokenizer, LogitsProcessorList
 
 from ..configs.model_args import PhraseSamplerType
 from ..models.modeling_dva import DVALogitsProcessor, DVAModel
-from ..models.sampler import BasePhraseSampler, FMMPhraseSampler, NTokenPhraseSampler, NWordsPhraseSampler
+from ..models.sampler import (
+    BasePhraseSampler,
+    FMMPhraseSampler,
+    NTokenPhraseSampler,
+    NWordsPhraseSampler,
+)
 from ..models.tokenization_dva import DVATokenizer
 from ..utils.visualization import get_visualization
 from .retriever import BaseRetriever, FAISSRetriever
@@ -39,7 +44,9 @@ def prepare(
 
     # DVAModel
     model = DVAModel.from_pretrained(
-        dva_model_path, device_map="auto", phrase_encoder_batch_size=phrase_encoder_batch_size
+        dva_model_path,
+        device_map="auto",
+        phrase_encoder_batch_size=phrase_encoder_batch_size,
     )
     model.eval()
 
@@ -76,7 +83,9 @@ def prepare(
         static_vocab=model.config.language_model_config.vocab_size,
         sampler=phrase_sampler,
     )
-    tokenizer.lm_tokenizer.padding_side = "left"  # We set the padding side to left during inference
+    tokenizer.lm_tokenizer.padding_side = (
+        "left"  # We set the padding side to left during inference
+    )
 
     # Retriever
     retriever = FAISSRetriever(
@@ -101,20 +110,36 @@ def infer(
     visualize: bool = False,
     **kwargs,
 ):
-    supporting_documents_list = [retriever.retrieve_documents(query, doc_top_k) for query in queries]
+    supporting_documents_list = [
+        retriever.retrieve_documents(query, doc_top_k) for query in queries
+    ]
     phrase_candidates_list = [
-        [phrase for document in documents for phrase in phrase_sampler.sample(document)]
+        [
+            phrase
+            for document in documents
+            for phrase in phrase_sampler.sample(document)
+        ]
         for documents in supporting_documents_list
     ]
-    phrase_inputs = tokenizer.batch_encode(phrase_candidates_list, phrases_mask=True)
-    prefix_inputs = tokenizer.lm_tokenizer(queries, return_tensors="pt", padding=True, truncation=True, max_length=512)
+    phrase_inputs = tokenizer.batch_encode(
+        phrase_candidates_list, phrases_mask=True
+    )
+    prefix_inputs = tokenizer.lm_tokenizer(
+        queries,
+        return_tensors="pt",
+        padding=True,
+        truncation=True,
+        max_length=512,
+    )
 
     input_ids = prefix_inputs["input_ids"].to(model.device)
     attention_mask = prefix_inputs["attention_mask"].to(model.device)
     phrase_ids = phrase_attention_mask = None
     if len(phrase_inputs["phrase_ids"]):
         phrase_ids = phrase_inputs["phrase_ids"].to(model.device)
-        phrase_attention_mask = phrase_inputs["phrase_attention_mask"].to(model.device)
+        phrase_attention_mask = phrase_inputs["phrase_attention_mask"].to(
+            model.device
+        )
     mask_phrase_ids = phrase_inputs["mask_ids"]
 
     dva_embeds = model.get_dva_embeddings(phrase_ids, phrase_attention_mask)
@@ -122,15 +147,20 @@ def infer(
         input_ids=input_ids,
         attention_mask=attention_mask,
         dva_embeds=dva_embeds,
-        logits_processor=LogitsProcessorList([DVALogitsProcessor(mask_phrase_ids)]),
+        logits_processor=LogitsProcessorList(
+            [DVALogitsProcessor(mask_phrase_ids)]
+        ),
         output_scores=visualize,
-        return_dict_in_generate=visualize,
+        return_dict_in_generate=True,
         **kwargs,
     )
     if phrase_ids is not None:
         phrase_ids = phrase_ids.tolist()
 
-    res = [tokenizer.decode(output.tolist(), phrase_ids, return_ids=return_ids) for output in outputs.sequences]
+    res = [
+        tokenizer.decode(output.tolist(), phrase_ids, return_ids=return_ids)
+        for output in outputs.sequences
+    ]
 
     if visualize:
         for idx in range(len(res)):
@@ -147,7 +177,9 @@ def infer(
                 tmp.append(
                     {
                         "token": step_token,
-                        "type": "token" if step_id < tokenizer.static_vocab else "phrase",
+                        "type": "token"
+                        if step_id < tokenizer.static_vocab
+                        else "phrase",
                         "prob": step_prob[int(step_id)].item(),
                     }
                 )
@@ -165,20 +197,36 @@ def infer_web(
     doc_top_k: int,
     **kwargs,
 ):
-    supporting_documents_list = [retriever.retrieve_documents(query, doc_top_k) for query in queries]
+    supporting_documents_list = [
+        retriever.retrieve_documents(query, doc_top_k) for query in queries
+    ]
     phrase_candidates_list = [
-        [phrase for document in documents for phrase in phrase_sampler.sample(document)]
+        [
+            phrase
+            for document in documents
+            for phrase in phrase_sampler.sample(document)
+        ]
         for documents in supporting_documents_list
     ]
-    phrase_inputs = tokenizer.batch_encode(phrase_candidates_list, phrases_mask=True)
-    prefix_inputs = tokenizer.lm_tokenizer(queries, return_tensors="pt", padding=True, truncation=True, max_length=512)
+    phrase_inputs = tokenizer.batch_encode(
+        phrase_candidates_list, phrases_mask=True
+    )
+    prefix_inputs = tokenizer.lm_tokenizer(
+        queries,
+        return_tensors="pt",
+        padding=True,
+        truncation=True,
+        max_length=512,
+    )
 
     input_ids = prefix_inputs["input_ids"].to(model.device)
     attention_mask = prefix_inputs["attention_mask"].to(model.device)
     phrase_ids = phrase_attention_mask = None
     if len(phrase_inputs["phrase_ids"]):
         phrase_ids = phrase_inputs["phrase_ids"].to(model.device)
-        phrase_attention_mask = phrase_inputs["phrase_attention_mask"].to(model.device)
+        phrase_attention_mask = phrase_inputs["phrase_attention_mask"].to(
+            model.device
+        )
     mask_phrase_ids = phrase_inputs["mask_ids"]
 
     outputs = model.generate(
@@ -186,7 +234,11 @@ def infer_web(
         attention_mask=attention_mask,
         phrase_ids=phrase_ids,
         phrase_attention_mask=phrase_attention_mask,
-        logits_processor=LogitsProcessorList([DVALogitsProcessor(mask_phrase_ids)]),
+        logits_processor=LogitsProcessorList(
+            [DVALogitsProcessor(mask_phrase_ids)]
+        ),
         **kwargs,
     )
-    return [tokenizer.decode(output, phrase_ids) for output in outputs], input_ids
+    return [
+        tokenizer.decode(output, phrase_ids) for output in outputs
+    ], input_ids

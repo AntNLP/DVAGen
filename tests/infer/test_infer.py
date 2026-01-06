@@ -4,15 +4,25 @@ import sys
 
 sys.path.append("/home/jhkuang/projects/DVAGen_related/DVAGen")
 
+import simple_parsing
 
-from src.dvagen.configs import get_infer_args
-from src.dvagen.infer.infer import infer, prepare
+from dvagen.configs.parser import InferArgs
+from dvagen.infer.infer import infer, prepare
 
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 if __name__ == "__main__":
-    infer_args = get_infer_args()
+    config_path = (
+        "/home/jhkuang/projects/DVAGen_related/DVAGen/examples/chat.yaml"
+    )
+    infer_args = simple_parsing.parse(
+        config_class=InferArgs,
+        conflict_resolution=simple_parsing.ConflictResolution.NONE,
+        argument_generation_mode=simple_parsing.ArgumentGenerationMode.FLAT,
+        args=["--config_path", str(config_path)],
+        add_config_path_arg=True,
+    )
     model, phrase_sampler, tokenizer, retriever = prepare(
         dva_model_path=infer_args.model.model_name_or_path,
         retriever_embedding_model_path=infer_args.infer.embedding_model_path,
@@ -45,7 +55,7 @@ if __name__ == "__main__":
             "Introduce Canada to me:",
         ],
         doc_top_k=32,
-        visualize=True,
+        # visualize=True,
     )
 
     print(res)
